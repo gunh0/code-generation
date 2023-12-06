@@ -18,8 +18,8 @@ for i in range(0, len(text) - max_len, step):
     sentences.append(text[i : i + max_len])
     next_chars.append(text[i + max_len])
 
-x = np.zeros((len(sentences), max_len, len(chars)), dtype=np.bool)
-y = np.zeros((len(sentences), len(chars)), dtype=np.bool)
+x = np.zeros((len(sentences), max_len, len(chars)), dtype=bool)  # Change dtype to bool
+y = np.zeros((len(sentences), len(chars)), dtype=bool)  # Change dtype to bool
 
 for i, sentence in enumerate(sentences):
     for t, char in enumerate(sentence):
@@ -45,7 +45,8 @@ def generate_text(seed_text, length=100):
     for _ in range(length):
         x_pred = np.zeros((1, max_len, len(chars)))
         for t, char in enumerate(seed_text):
-            x_pred[0, t, char_indices[char]] = 1.0
+            if t < max_len:  # Check if the index is within the valid range
+                x_pred[0, t, char_indices[char]] = 1.0
 
         preds = model.predict(x_pred, verbose=0)[0]
         next_index = np.argmax(preds)
